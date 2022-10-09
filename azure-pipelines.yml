@@ -40,6 +40,6 @@ stages:
     - task: DownloadBuildArtifacts@0
       inputs:
         buildType: 'current'
-        downloadType: 'single'
-        itemPattern: '** drop/**'
+        downloadType: 'specific'
         downloadPath: '$(System.ArtifactsDirectory)'
+        
