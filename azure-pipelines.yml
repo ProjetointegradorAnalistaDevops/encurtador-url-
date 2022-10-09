@@ -37,9 +37,12 @@ stages:
         containerRegistry: $(dockerRegistryServiceConnection)
         tags: 
           $(tag)
-    - task: DownloadBuildArtifacts@0
+    - task: DownloadPipelineArtifact@2
       inputs:
-        buildType: 'current'
-        downloadType: 'specific'
-        downloadPath: '$(System.ArtifactsDirectory)'
+        buildType: 'specific'
+        project: '0b392d2c-bfcf-42c0-8e2a-76e2824fe7cb'
+        definition: '13'
+        buildVersionToDownload: 'latest'
+        allowPartiallySucceededBuilds: true
+        targetPath: '$(Pipeline.Workspace)'
         
