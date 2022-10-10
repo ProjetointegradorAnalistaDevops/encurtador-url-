@@ -18,8 +18,15 @@ variables:
   # Agent VM image name
   vmImageName: 'ubuntu-latest'
 
-  steps:
-  - step:
+stages:
+- stage: Build
+  displayName: Build and push stage
+  jobs:
+  - job: Build
+    displayName: Build
+    pool:
+      vmImage: $(vmImageName)
+    steps:
     - task: NodeTool@0
       inputs:
         versionSpec: '10.x'
@@ -34,25 +41,6 @@ variables:
         PathtoPublish: '$(Build.ArtifactStagingDirectory)'
         ArtifactName: 'drop'
         publishLocation: 'Container'
-
-stages:
-- stage: Build
-  displayName: Build and push stage
-  jobs:
-  - job: Build
-    displayName: Build
-    pool:
-      vmImage: $(vmImageName)
-    steps:
-    - task: Docker@2
-      displayName: Build and push an image to container registry
-      inputs:
-        command: buildAndPush
-        repository: $(imageRepository)
-        dockerfile: $(dockerfilePath)
-        containerRegistry: $(dockerRegistryServiceConnection)
-        tags: 
-          $(tag)
     - task: DockerCompose@0
       inputs:
         containerregistrytype: 'Azure Container Registry'
