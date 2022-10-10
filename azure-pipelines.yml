@@ -51,6 +51,15 @@ stages:
         azureContainerRegistry: '{"loginServer":"testshortnerurlcontainerregister.azurecr.io", "id" : "/subscriptions/99d0fa6e-d94e-4d3a-a721-b0c4e260304c/resourceGroups/test-shortenerurl/providers/Microsoft.ContainerRegistry/registries/testshortnerurlcontainerregister"}'
         dockerComposeFile: '**/docker-compose.yml'
         action: 'Push services'
+    
+    - task: DownloadBuildArtifacts@0
+      inputs:
+        buildType: 'specific'
+        project: '0b392d2c-bfcf-42c0-8e2a-76e2824fe7cb'
+        pipeline: '13'
+        buildVersionToDownload: 'latest'
+        downloadType: 'single'
+        downloadPath: '$(System.ArtifactsDirectory)'
 
     - task: PublishBuildArtifacts@1
       inputs:
