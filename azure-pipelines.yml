@@ -1,7 +1,6 @@
 # Docker
 # Build and push an image to Azure Container Registry
 # https://docs.microsoft.com/azure/devops/pipelines/languages/docker
-
 trigger:
 - main
 
@@ -18,6 +17,22 @@ variables:
 
   # Agent VM image name
   vmImageName: 'ubuntu-latest'
+
+  steps:
+    - task: NodeTool@0
+      inputs:
+        versionSpec: '10.x'
+      displayName: 'Install Node.js'
+
+    - script: |
+        npm install
+        npm run build
+      displayName: 'npm install and build'
+    - task: PublishBuildArtifacts@1
+      inputs:
+        PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+        ArtifactName: 'drop'
+        publishLocation: 'Container'
 
 stages:
 - stage: Build
@@ -51,12 +66,3 @@ stages:
         azureContainerRegistry: '{"loginServer":"testshortnerurlcontainerregister.azurecr.io", "id" : "/subscriptions/99d0fa6e-d94e-4d3a-a721-b0c4e260304c/resourceGroups/test-shortenerurl/providers/Microsoft.ContainerRegistry/registries/testshortnerurlcontainerregister"}'
         dockerComposeFile: '**/docker-compose.yml'
         action: 'Push services'
-    - task: CopyFiles@2
-      displayName: 'Copy scripts'
-      inputs:
-        contents: 'scripts/**'
-        targetFolder: '$(Build.ArtifactStagingDirectory)'
-
-    - publish: '$(Build.ArtifactStagingDirectory)/scripts'
-      displayName: 'Publish script'
-      artifact: drop
